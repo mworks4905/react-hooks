@@ -76,7 +76,6 @@ function App () {
     fetch(`https://www.omdbapi.com/?s=${searchValue}&apikey=ab6fbef0`)
       .then(res => res.json())
       .then(jsonResponse => {
-        console.log(jsonResponse.Search);
         if (jsonResponse.Response === "True") {
           dispatch({
             type: "SEARCH_MOVIES_SUCCESS",
@@ -99,10 +98,8 @@ function App () {
     fetch(`https://www.omdbapi.com/?i=${movieID}&apikey=ab6fbef0`)
       .then(res => res.json())
       .then(res => {
-        console.log(res);
         let response = []
         response[0] = res
-        console.log(response);
         dispatch({
           type: "SEARCH_MOVIE_DETAILS_SUCCESS",
           payload: response
