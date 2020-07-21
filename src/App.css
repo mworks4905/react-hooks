@@ -45,7 +45,6 @@
 
 .movies {
   padding: 1rem;
-  max-width: 1024px;
   margin: auto;
   display: flex;
   flex-wrap: wrap;
@@ -67,10 +66,46 @@
 }
 
 .movie {
-  padding: 5px 25px 10px 25px;
+  /* padding: 5px 25px 10px 25px; */
+  /* margin: auto; */
+  margin: 1rem;
   max-width: 25%;
-  vertical-align: bottom;
+  width: 200px;
 }
+
+.movie-details-wrapper {
+  display: flex;
+  justify-content: flex-start;
+  padding: 1rem;
+  max-width: 1024px;
+  margin: auto;
+}
+
+.movie-details-poster {
+  max-width: 50%;
+  display: inline-block;
+}
+
+.movie-details-poster img {
+  width: 100%;
+}
+
+@media screen and (min-width: 768px) {
+  .movie-details-poster img {
+    width: auto;
+  }
+}
+
+.movie-info {
+  text-align: left;
+  padding-left: 1rem;
+  vertical-align: top;
+}
+
+.movie-info p:first-child {
+  margin-top: 0;
+}
+
 
 .errorMessage {
   margin: auto;

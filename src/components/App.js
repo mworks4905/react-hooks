@@ -3,12 +3,14 @@ import '../App.css';
 import Header from './Header'
 import Movie from './Movie'
 import Search from './Search'
+import MovieDetails from './MovieDetails'
 
 const MOVIE_API_URL = "https://www.omdbapi.com/?s=man&apikey=ab6fbef0"
 
 const initialState = {
   loading: true,
   movies: [],
+  details: [],
   errorMessage: null
 }
 
@@ -32,12 +34,24 @@ const reducer = (state, action) => {
         loading: false,
         errorMessage: action.error
       };
+    case "SEARCH_MOVIE_DETAILS_REQUEST":
+      return {
+        ...state,
+        loading: true,
+        errorMessage: null
+      };
+    case "SEARCH_MOVIE_DETAILS_SUCCESS":
+      return {
+        ...state,
+        loading: false,
+        details: action.payload
+      };
     default:
       return state;
   }
 }
 
-function App() {
+function App () {
   const [ state, dispatch ] = useReducer(reducer, initialState)
 
   useEffect(() => {
@@ -62,6 +76,7 @@ function App() {
     fetch(`https://www.omdbapi.com/?s=${searchValue}&apikey=ab6fbef0`)
       .then(res => res.json())
       .then(jsonResponse => {
+        console.log(jsonResponse.Search);
         if (jsonResponse.Response === "True") {
           dispatch({
             type: "SEARCH_MOVIES_SUCCESS",
@@ -76,23 +91,42 @@ function App() {
       })
   }
 
-  const { movies, errorMessage, loading } = state
+  const getMovieDetails = movieID => {
+    dispatch({
+      type: "SEARCH_MOVIE_DETAILS_REQUEST"
+    })
+
+    fetch(`https://www.omdbapi.com/?i=${movieID}&apikey=ab6fbef0`)
+      .then(res => res.json())
+      .then(res => {
+        console.log(res);
+        let response = []
+        response[0] = res
+        console.log(response);
+        dispatch({
+          type: "SEARCH_MOVIE_DETAILS_SUCCESS",
+          payload: response
+        })
+      });
+  }
+
+  const { movies, errorMessage, loading, details } = state
 
   return (
     <div className="App">
       <Header text="HOOKED"/>
       <Search search={search} />
-      <p className="App-intro">Sharing a few of our favorite movies</p>
+      <p className="App-intro">Search for your favorite movies</p>
       <div className="movies">
-        {loading && !errorMessage ? (
-          <span>loading...</span>
-        ) : errorMessage ? (
-          <div className="errorMessage">{errorMessage}</div>
-        ) : (
-          movies.map((movie, index) => (
-            <Movie key={`${index}-${movie.Title}`} movie={movie} />
+        {loading && !errorMessage ? (<span>loading...</span>)
+          : errorMessage ? (<div className="errorMessage">{errorMessage}</div>)
+          : (movies.map((movie, index) => (
+            <Movie key={`${index}-${movie.Title}`} movie={movie} getMovieDetails={getMovieDetails}/>
           ))
         )}
+      </div>
+      <div>
+        {details.map((detail, index) => <MovieDetails key={`${index}`} details={detail} /> )}
       </div>
     </div>
   );
